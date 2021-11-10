@@ -1,0 +1,18 @@
+version: 0.2
+phases:
+  install: 
+    runtime-versions:
+      nodejs: 14
+    commands:
+      - cd tiny-url-web
+      - npm install -g @angular/cli@13.0.1
+      - npm install
+  build:
+    commands:
+      - ng build --configuration=$BUILD_ENV --build-optimizer
+  post_build:
+    commands:
+      - cd dist
+      - zip -r tiny-url-web.zip ./tiny-url-web
+      - zip -ur tiny-url-web.zip ../../scripts ../../appspec.yml
+      - aws s3 cp tiny-url-web.zip s3://$BUCKET_NAME
